@@ -1,1 +1,1 @@
-web: IGCAPP
+web: IGCApp
