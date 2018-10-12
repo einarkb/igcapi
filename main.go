@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -20,12 +22,21 @@ func hello(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// IgcHandler handles /igcinfo/api/igc/
 func IgcHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		if r.Body == nil {
-			fmt.Fprintf(w, "has no body")
-		} else {
+		type InputURL struct {
+			URL *string `json:"url"`
+		}
+		inputURL := InputURL{}
+		err := json.NewDecoder(r.Body).Decode(inputURL)
+		switch {
+		case err == io.EOF:
+			fmt.Fprintf(w, "empty body")
+		case err != nil:
+			fmt.Fprintf(w, "other error")
+		default:
 			fmt.Fprintf(w, "has body")
 		}
 	default:
@@ -41,7 +52,7 @@ func main() {
 	}
 
 	http.HandleFunc("/", hello)
-	http.HandleFunc("/igcinfo/api/igc", IgcHandler)
+	http.HandleFunc("/igcinfo/api/igc/", IgcHandler)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		panic(err)
 	}
