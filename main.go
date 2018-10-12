@@ -19,6 +19,21 @@ func hello(w http.ResponseWriter, r *http.Request) {
 			track.Pilot, track.GliderType, track.Date.String())
 	}
 }
+
+func IgcHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "POST":
+		if r.Body == nil {
+			fmt.Fprintf(w, "has no body")
+		} else {
+			fmt.Fprintf(w, "has body")
+		}
+	default:
+		fmt.Fprintf(w, "not post")
+	}
+
+}
+
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -26,6 +41,7 @@ func main() {
 	}
 
 	http.HandleFunc("/", hello)
+	http.HandleFunc("/igcinfo/api/igc", IgcHandler)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		panic(err)
 	}
