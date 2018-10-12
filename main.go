@@ -3,9 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/marni/goigc"
 )
@@ -25,16 +27,15 @@ func hello(w http.ResponseWriter, r *http.Request) {
 func IgcHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("content-type", "application/json")
 
-	type Input struct {
+	/*type Input struct {
 		URL string `json:"url"`
 	}
 	var input Input
 	json.NewDecoder(r.Body).Decode(&input)
 	if r.Method == "POST" {
-		input.URL += "ee"
 		json.NewEncoder(w).Encode(input)
-	}
-	/*switch r.Method {
+	}*/
+	switch r.Method {
 	case "POST":
 		type Input struct {
 			URL string `json:"url"`
@@ -70,7 +71,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	default:
 		fmt.Fprintf(w, "not post")
-	}*/
+	}
 
 }
 
