@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 
 	"github.com/marni/goigc"
 )
@@ -44,7 +43,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 		err := json.NewDecoder(r.Body).Decode(&input)
 		switch err {
 		case nil:
-			if input.URL == "" {
+			/*if input.URL == "" {
 				http.Error(w, "No url in body", http.StatusBadRequest)
 			} else {
 				//check if valid igc url
@@ -53,7 +52,8 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 				fmt.Fprintf(w, "The URL already exists")
-			}
+			}*/
+			fmt.Fprintf(w, "heeei")
 		case io.EOF:
 			http.Error(w, "POST body is empty", http.StatusBadRequest)
 		default:
