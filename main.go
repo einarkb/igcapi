@@ -28,10 +28,10 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 	type Input struct {
 		URL string `json:"url"`
 	}
-	input := new(Input)
+	var input Input
 	json.NewDecoder(r.Body).Decode(&input)
 	if r.Method == "POST" {
-		json.NewEncoder(w).Encode(&input)
+		json.NewEncoder(w).Encode(input)
 	}
 	/*switch r.Method {
 	case "POST":
