@@ -28,7 +28,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 	type Input struct {
 		URL string `json:"url"`
 	}
-	var input Input
+	input := new(Input)
 	json.NewDecoder(r.Body).Decode(&input)
 	if r.Method == "POST" {
 		json.NewEncoder(w).Encode(&input)
