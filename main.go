@@ -25,10 +25,8 @@ func hello(w http.ResponseWriter, r *http.Request) {
 
 // IgcHandler handles /igcinfo/api/igc/
 func IgcHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "igchandler")
 	switch r.Method {
 	case "POST":
-		fmt.Fprintf(w, "post")
 		type Input struct {
 			URL string `json:"url"`
 		}
@@ -50,6 +48,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "POST body is empty", http.StatusBadRequest)
 		default:
 			http.Error(w, "Something went wrong", http.StatusInternalServerError)
+			fmt.Fprintf(w, err.Error())
 		}
 
 	case "GET":
