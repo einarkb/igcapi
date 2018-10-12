@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/marni/goigc"
 )
@@ -44,15 +45,17 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 				} else {
 					http.Error(w, "track already exists with id: "+strconv.Itoa(id), http.StatusBadRequest)
 				}
+			} else {
+				http.Error(w, "Body does not contain an url", http.StatusBadRequest)
 			}
 		} else if err == io.EOF {
 			http.Error(w, "POST body is empty", http.StatusBadRequest)
 		} else {
 			http.Error(w, "Something went wrong", http.StatusInternalServerError)
 		}
-
-		//}
-		//fmt.Fprintf(w, "The URL already exists")
+	} else if r.Method == "GET" {
+		parts := strings.Split(r.URL.Path, "/")
+		http.Error(w, strconv.Itoa(len(parts)), http.StatusInternalServerError)
 	}
 	/*switch r.Method {
 	case "POST":
