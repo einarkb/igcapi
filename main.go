@@ -31,7 +31,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 		type Input struct {
 			URL string `json:"url"`
 		}
-		input := Input{}
+		var input Input
 		err := json.NewDecoder(r.Body).Decode(&input)
 		switch err {
 		case nil:
