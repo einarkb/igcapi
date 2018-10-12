@@ -34,9 +34,12 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		var input Input
 		json.NewDecoder(r.Body).Decode(&input)
-		//if id := globalTracksDb.Add(input.URL); id > 0 {
-		json.NewEncoder(w).Encode(ID{5})
-		return
+		if input.URL != "" {
+			id := globalTracksDb.Add(input.URL)
+			json.NewEncoder(w).Encode(ID{id})
+			return
+		}
+
 		//}
 		//fmt.Fprintf(w, "The URL already exists")
 	}
