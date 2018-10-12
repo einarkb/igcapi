@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -34,14 +35,20 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 			ID int `json:"id"`
 		}
 		var input Input
-		json.NewDecoder(r.Body).Decode(&input)
-		if input.URL != "" {
-			id, added := globalTracksDb.Add(input.URL)
-			if added {
-				json.NewEncoder(w).Encode(ID{id})
-			} else {
-				http.Error(w, "track already exists with id: "+strconv.Itoa(id), http.StatusBadRequest)
+		err := json.NewDecoder(r.Body).Decode(&input)
+		if err == nil {
+			if input.URL != "" {
+				id, added := globalTracksDb.Add(input.URL)
+				if added {
+					json.NewEncoder(w).Encode(ID{id})
+				} else {
+					http.Error(w, "track already exists with id: "+strconv.Itoa(id), http.StatusBadRequest)
+				}
 			}
+		} else if err == io.EOF {
+			http.Error(w, "POST body is empty", http.StatusBadRequest)
+		} else {
+			http.Error(w, "Something went wrong", http.StatusInternalServerError)
 		}
 
 		//}
