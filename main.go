@@ -55,7 +55,21 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	} else if r.Method == "GET" {
 		parts := strings.Split(r.URL.Path, "/")
-		http.Error(w, strconv.Itoa(len(parts)), http.StatusInternalServerError)
+		i, err := strconv.Atoi(parts[4])
+		if err != nil {
+			http.Error(w, "Invalid url", http.StatusBadRequest)
+			return
+		}
+		type Input struct { // temp
+			URL string `json:"url"`
+		}
+		// check if int
+		track, found := globalTracksDb.Get(i)
+		if !found {
+			http.Error(w, "Track not found, id: "+strconv.Itoa(i), http.StatusBadRequest)
+			return
+		}
+		json.NewEncoder(w).Encode(Input{track})
 	}
 	/*switch r.Method {
 	case "POST":
