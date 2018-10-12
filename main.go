@@ -88,7 +88,7 @@ var globalTracksDb TrackURLsDB
 
 func main() {
 	globalTracksDb = TrackURLsDB{}
-	globalTracksDb.nextID = 1
+	globalTracksDb.Init()
 	port := os.Getenv("PORT")
 	if port == "" {
 		log.Fatal("$PORT is not set")

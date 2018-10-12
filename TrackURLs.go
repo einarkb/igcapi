@@ -6,6 +6,11 @@ type TrackURLsDB struct {
 	nextID int
 }
 
+func (db *TrackURLsDB) Init() {
+	db.nextID = 1
+	db.urls = make(map[int]string)
+}
+
 // Add inserts and stores a new url
 // returns the id of inserted item or -1 if it alreayd existed
 func (db *TrackURLsDB) Add(url string) int {
