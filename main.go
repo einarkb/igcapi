@@ -24,8 +24,10 @@ func hello(w http.ResponseWriter, r *http.Request) {
 
 // IgcHandler handles /igcinfo/api/igc/
 func IgcHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "igchandler")
 	switch r.Method {
 	case "POST":
+		fmt.Fprintf(w, "post")
 		type InputURL struct {
 			URL *string `json:"url"`
 		}
