@@ -39,7 +39,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 			if added {
 				json.NewEncoder(w).Encode(ID{id})
 			} else {
-				fmt.Fprintf(w, "Track alreayd exists")
+				fmt.Fprintln(w, "Track alreadyd exists")
 			}
 		}
 
