@@ -25,6 +25,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 
 // IgcHandler handles /igcinfo/api/igc/
 func IgcHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("content-type", "application/json")
 	switch r.Method {
 	case "POST":
 		type Input struct {
