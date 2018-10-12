@@ -33,7 +33,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 			URL string `json:"url"`
 		}
 		input := Input{}
-		err := json.NewDecoder(r.Body).Decode(input)
+		err := json.NewDecoder(r.Body).Decode(&input)
 		switch err {
 		case nil:
 			if input.URL == "" {
