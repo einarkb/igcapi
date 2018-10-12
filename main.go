@@ -31,10 +31,10 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		inputURL := InputURL{}
 		err := json.NewDecoder(r.Body).Decode(inputURL)
-		switch {
-		case err == io.EOF:
+		switch err {
+		case io.EOF:
 			fmt.Fprintf(w, "empty body")
-		case err != nil:
+		case nil:
 			fmt.Fprintf(w, "other error")
 		default:
 			fmt.Fprintf(w, "has body")
