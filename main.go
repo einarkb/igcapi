@@ -31,6 +31,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 	var input Input
 	json.NewDecoder(r.Body).Decode(&input)
 	if r.Method == "POST" {
+		input.URL += "ee"
 		json.NewEncoder(w).Encode(input)
 	}
 	/*switch r.Method {
