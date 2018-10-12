@@ -87,6 +87,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 var globalTracksDb TrackURLsDB
 
 func main() {
+	globalTracksDb = TrackURLsDB{}
 	globalTracksDb.nextID = 1
 	port := os.Getenv("PORT")
 	if port == "" {
