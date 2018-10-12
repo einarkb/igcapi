@@ -1,6 +1,43 @@
 {
 	"comment": "",
 	"ignore": "test",
-	"package": [],
+	"package": [
+		{
+			"checksumSHA1": "b6LyZHPvCyixC7AFtuypEs3pq48=",
+			"path": "github.com/golang/geo/r1",
+			"revision": "476085157cff9aaeef4d4f124649436542d4114a",
+			"revisionTime": "2018-10-08T08:51:00Z"
+		},
+		{
+			"checksumSHA1": "F8azHBsAWtTTeX1sKpkL56bekMA=",
+			"path": "github.com/golang/geo/r2",
+			"revision": "476085157cff9aaeef4d4f124649436542d4114a",
+			"revisionTime": "2018-10-08T08:51:00Z"
+		},
+		{
+			"checksumSHA1": "4B39NxB+gD6i+qfWfd0jsGOanOM=",
+			"path": "github.com/golang/geo/r3",
+			"revision": "476085157cff9aaeef4d4f124649436542d4114a",
+			"revisionTime": "2018-10-08T08:51:00Z"
+		},
+		{
+			"checksumSHA1": "rVhO/a+mJ39RDVbMNsnP5WqMzmw=",
+			"path": "github.com/golang/geo/s1",
+			"revision": "476085157cff9aaeef4d4f124649436542d4114a",
+			"revisionTime": "2018-10-08T08:51:00Z"
+		},
+		{
+			"checksumSHA1": "j34csQtkvdViAbzZE296OADZc0g=",
+			"path": "github.com/golang/geo/s2",
+			"revision": "476085157cff9aaeef4d4f124649436542d4114a",
+			"revisionTime": "2018-10-08T08:51:00Z"
+		},
+		{
+			"checksumSHA1": "jOsCiYOTodAKvPADxUTCVidYSlk=",
+			"path": "github.com/marni/goigc",
+			"revision": "71f274dd21ef320ccbb6c6271c7df7fd8a908779",
+			"revisionTime": "2018-09-09T23:15:54Z"
+		}
+	],
 	"rootPath": "IGCApp"
 }
