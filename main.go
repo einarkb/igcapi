@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -26,15 +25,22 @@ func hello(w http.ResponseWriter, r *http.Request) {
 func IgcHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("content-type", "application/json")
 
-	/*type Input struct {
-		URL string `json:"url"`
-	}
-	var input Input
-	json.NewDecoder(r.Body).Decode(&input)
 	if r.Method == "POST" {
-		json.NewEncoder(w).Encode(input)
-	}*/
-	switch r.Method {
+		type Input struct {
+			URL string `json:"url"`
+		}
+		type ID struct {
+			ID int `json:"id"`
+		}
+		var input Input
+		json.NewDecoder(r.Body).Decode(&input)
+		if id := globalTracksDb.Add(input.URL); id > 0 {
+			json.NewEncoder(w).Encode(ID{id})
+			return
+		}
+		fmt.Fprintf(w, "The URL already exists")
+	}
+	/*switch r.Method {
 	case "POST":
 		type Input struct {
 			URL string `json:"url"`
@@ -43,7 +49,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 		err := json.NewDecoder(r.Body).Decode(&input)
 		switch err {
 		case nil:
-			/*if input.URL == "" {
+			if input.URL == "" {
 				http.Error(w, "No url in body", http.StatusBadRequest)
 			} else {
 				//check if valid igc url
@@ -52,7 +58,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 				fmt.Fprintf(w, "The URL already exists")
-			}*/
+			}
 			fmt.Fprintf(w, "heeei")
 		case io.EOF:
 			http.Error(w, "POST body is empty", http.StatusBadRequest)
@@ -71,7 +77,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	default:
 		fmt.Fprintf(w, "not post")
-	}
+	}*/
 
 }
 
