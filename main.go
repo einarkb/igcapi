@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/marni/goigc"
 )
@@ -35,9 +36,12 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 		var input Input
 		json.NewDecoder(r.Body).Decode(&input)
 		if input.URL != "" {
-			id := globalTracksDb.Add(input.URL)
-			json.NewEncoder(w).Encode(ID{id})
-			return
+			id, added := globalTracksDb.Add(input.URL)
+			if added {
+				json.NewEncoder(w).Encode(ID{id})
+			} else {
+				fmt.Fprintf(w, "Track alreayd exists with id: "+strconv.Itoa(id))
+			}
 		}
 
 		//}

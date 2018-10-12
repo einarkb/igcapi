@@ -13,10 +13,15 @@ func (db *TrackURLsDB) Init() {
 
 // Add inserts and stores a new url
 // returns the id of inserted item or -1 if it alreayd existed
-func (db *TrackURLsDB) Add(url string) int {
+func (db *TrackURLsDB) Add(url string) (int, bool) {
+	for k, v := range db.urls {
+		if v == url {
+			return k, false
+		}
+	}
 	db.urls[db.nextID] = url
 	db.nextID++
-	return db.nextID - 1
+	return db.nextID - 1, true
 }
 
 // Get return the url and true if it was found/false if not
