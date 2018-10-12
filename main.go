@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/marni/goigc"
 )
@@ -28,18 +29,36 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
 		fmt.Fprintf(w, "post")
-		type InputURL struct {
-			URL *string `json:"url"`
+		type Input struct {
+			URL string `json:"url"`
 		}
-		inputURL := InputURL{}
-		err := json.NewDecoder(r.Body).Decode(inputURL)
+		input := Input{}
+		err := json.NewDecoder(r.Body).Decode(input)
 		switch err {
-		case io.EOF:
-			fmt.Fprintf(w, "empty body")
 		case nil:
-			fmt.Fprintf(w, "other error")
+			if input.URL == "" {
+				http.Error(w, "No url in body", http.StatusBadRequest)
+			} else {
+				//check if valid igc url
+				if id := globalTracksDb.Add(input.URL); id > 0 {
+					fmt.Fprintf(w, "{\"id\": "+strconv.Itoa(id)+"}")
+					return
+				}
+				fmt.Fprintf(w, "The URL already exists")
+			}
+		case io.EOF:
+			http.Error(w, "POST body is empty", http.StatusBadRequest)
 		default:
-			fmt.Fprintf(w, "has body")
+			http.Error(w, "Something went wrong", http.StatusInternalServerError)
+		}
+
+	case "GET":
+		type IDStruct struct {
+			ID int `json:"id"`
+		}
+		for _, v := range globalTracksDb.ids {
+			idStruct := IDStruct{v}
+			json.NewEncoder(w).Encode(idStruct)
 		}
 	default:
 		fmt.Fprintf(w, "not post")
@@ -47,7 +66,10 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+var globalTracksDb TrackURLsDB
+
 func main() {
+	globalTracksDb.nextID = 1
 	port := os.Getenv("PORT")
 	if port == "" {
 		log.Fatal("$PORT is not set")
