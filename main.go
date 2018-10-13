@@ -55,7 +55,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	} else if r.Method == "GET" {
 		parts := strings.Split(r.URL.Path, "/")
-		if len(parts) != 5 {
+		if len(parts) > 6 {
 			http.Error(w, "Invalid request", http.StatusBadRequest)
 			return
 		}
@@ -66,6 +66,10 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			http.Error(w, "Invalid url", http.StatusBadRequest)
+			return
+		}
+		if len(parts) == 6 {
+			ReplyWithSingleField(w, id, parts[6])
 			return
 		}
 		ReplyWithTrack(w, id)
@@ -92,6 +96,35 @@ func ReplyWithTrack(w http.ResponseWriter, id int) {
 func ReplyWithAllTrackIds(w http.ResponseWriter) {
 	ids := globalTracksDb.GetIDs()
 	json.NewEncoder(w).Encode(ids)
+}
+
+// ReplyWithSingleField replies with the information found in the specified field of trakc with given id
+func ReplyWithSingleField(w http.ResponseWriter, id int, field string) {
+	trackURL, found := globalTracksDb.Get(id)
+	if !found {
+		http.Error(w, "No track found with id: "+strconv.Itoa(id), http.StatusBadRequest)
+		return
+	}
+	track, err := igc.ParseLocation(trackURL)
+	if err != nil {
+		fmt.Errorf("Problem reading the track", err)
+	} else {
+		switch field {
+		case "pilot" :
+			fmt.Fprintf(w, "Pilot: %s", track.Pilot)
+		case "glider":
+			fmt.Fprintf(w, "glider: %s", track.GliderType)
+		case "glider_id":
+			fmt.Fprintf(w, "glider_id: %s", track.GliderID)
+		case "H_date":
+			fmt.Fprintf(w, "H_date: %s", track.Date.String())
+			// calc
+		default:
+			fmt.Fprintln("invalid field specified", http.StatusBadRequest)
+		}
+	}
+}
+
 }
 
 var globalTracksDb TrackURLsDB
