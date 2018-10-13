@@ -64,12 +64,19 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 			URL string `json:"url"`
 		}
 		// check if int
-		track, found := globalTracksDb.Get(i)
+		trackURL, found := globalTracksDb.Get(i)
 		if !found {
-			http.Error(w, "Track not found, id: "+strconv.Itoa(i), http.StatusBadRequest)
+			http.Error(w, "No track found with id: "+strconv.Itoa(i), http.StatusBadRequest)
 			return
 		}
-		json.NewEncoder(w).Encode(Input{track})
+		track, err := igc.ParseLocation(trackURL)
+		if err != nil {
+			fmt.Errorf("Problem reading the track", err)
+		} else {
+			fmt.Fprintf(w, "Pilot: %s, gliderType: %s, date: %s",
+				track.Pilot, track.GliderType, track.Date.String())
+		}
+		//json.NewEncoder(w).Encode(Input{track})
 	}
 	/*switch r.Method {
 	case "POST":
