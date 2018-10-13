@@ -120,7 +120,7 @@ func ReplyWithSingleField(w http.ResponseWriter, id int, field string) {
 			fmt.Fprintf(w, "H_date: %s", track.Date.String())
 			// calc
 		default:
-			fmt.Fprintln("invalid field specified", http.StatusBadRequest)
+			http.Error(w, "invalid field specified", http.StatusBadRequest)
 		}
 	}
 }
