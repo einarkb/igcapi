@@ -64,3 +64,21 @@ func Test_Get(t *testing.T) {
 		t.Error("Expected 'test.com' but got '" + url + "'")
 	}
 }
+
+func Test_GetIDs(t *testing.T) {
+	db := TrackURLsDB{}
+	db.nextID = 1
+	db.urls = make(map[int]string)
+	db.urls[1] = "test1"
+	db.urls[2] = "test2"
+	db.urls[5] = "test5"
+	ids := db.GetIDs()
+	if len(ids) != 3 {
+		t.Error("Expected 3 ids, got " + strconv.Itoa(len(ids)))
+		return
+	}
+	if ids[0] != 1 || ids[1] != 2 || ids[2] != 5 {
+		t.Error("Ids don't match")
+		return
+	}
+}

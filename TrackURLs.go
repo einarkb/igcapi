@@ -30,3 +30,12 @@ func (db *TrackURLsDB) Get(id int) (string, bool) {
 	url, exists := db.urls[id]
 	return url, exists
 }
+
+// GetIDs returns an array with the id of every track
+func (db *TrackURLsDB) GetIDs() []int {
+	var arr []int
+	for id := range db.urls {
+		arr = append(arr, id)
+	}
+	return arr
+}

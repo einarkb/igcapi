@@ -55,6 +55,11 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	} else if r.Method == "GET" {
 		parts := strings.Split(r.URL.Path, "/")
+		if len(parts) == 4 {
+			ids := globalTracksDb.GetIDs()
+			json.NewEncoder(w).Encode(ids)
+		}
+
 		i, err := strconv.Atoi(parts[4])
 		if err != nil {
 			http.Error(w, "Invalid url", http.StatusBadRequest)
