@@ -127,7 +127,6 @@ func ReplyWithSingleField(w http.ResponseWriter, id int, field string) {
 
 			fmt.Fprintf(w, "distance: %f", d)
 			http.Error(w, "invalid field specified", http.StatusBadRequest)
-			track.
 		}
 	}
 }
