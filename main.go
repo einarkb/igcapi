@@ -110,7 +110,7 @@ func ReplyWithSingleField(w http.ResponseWriter, id int, field string) {
 		fmt.Errorf("Problem reading the track", err)
 	} else {
 		switch field {
-		case "pilot" :
+		case "pilot":
 			fmt.Fprintf(w, "Pilot: %s", track.Pilot)
 		case "glider":
 			fmt.Fprintf(w, "glider: %s", track.GliderType)
@@ -123,8 +123,6 @@ func ReplyWithSingleField(w http.ResponseWriter, id int, field string) {
 			fmt.Fprintln("invalid field specified", http.StatusBadRequest)
 		}
 	}
-}
-
 }
 
 var globalTracksDb TrackURLsDB
