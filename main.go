@@ -69,7 +69,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if len(parts) == 6 {
-			ReplyWithSingleField(w, id, parts[6])
+			ReplyWithSingleField(w, id, parts[5])
 			return
 		}
 		ReplyWithTrack(w, id)
