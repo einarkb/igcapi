@@ -55,6 +55,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	} else if r.Method == "GET" {
 		parts := strings.Split(r.URL.Path, "/")
+		json.NewEncoder(w).Encode(parts)
 		if len(parts) == 5 {
 			ids := globalTracksDb.GetIDs()
 			json.NewEncoder(w).Encode(ids)
