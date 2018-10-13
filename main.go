@@ -120,8 +120,14 @@ func ReplyWithSingleField(w http.ResponseWriter, id int, field string) {
 			fmt.Fprintf(w, "H_date: %s", track.Date.String())
 			// calc
 		default:
-			fmt.Fprintf(w, "distance: %f", track.Task.Distance())
+			d := 0.0
+			for i := 0; i < len(track.Points)-1; i++ {
+				d += track.Points[i].Distance(track.Points[i+1])
+			}
+
+			fmt.Fprintf(w, "distance: %f", d)
 			http.Error(w, "invalid field specified", http.StatusBadRequest)
+			track.
 		}
 	}
 }
