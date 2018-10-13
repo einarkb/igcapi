@@ -6,6 +6,7 @@ type TrackURLsDB struct {
 	nextID int
 }
 
+// Init initializes the TrackURLsD object. call once after creating object
 func (db *TrackURLsDB) Init() {
 	db.nextID = 1
 	db.urls = make(map[int]string)
