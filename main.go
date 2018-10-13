@@ -58,6 +58,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 		if len(parts) == 4 {
 			ids := globalTracksDb.GetIDs()
 			json.NewEncoder(w).Encode(ids)
+			return
 		}
 
 		i, err := strconv.Atoi(parts[4])
