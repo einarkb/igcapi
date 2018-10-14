@@ -2,26 +2,17 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
-
-	"github.com/marni/goigc"
 )
 
-func hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Hello World")
-	track, err := igc.ParseLocation("http://skypolaris.org/wp-content/uploads/IGS%20Files/Madrid%20to%20Jerez.igc")
-	if err != nil {
-		fmt.Errorf("Problem reading the track", err)
-	} else {
-		fmt.Fprintf(w, "Pilot: %s, gliderType: %s, date: %s",
-			track.Pilot, track.GliderType, track.Date.String())
-	}
+// RootHandler Responds with 404
+func RootHandler(w http.ResponseWriter, r *http.Request) {
+	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 }
 
 // IgcHandler handles /igcinfo/api/igc/
@@ -76,61 +67,6 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// ReplyWithTrack replies with the track of specified id
-func ReplyWithTrack(w http.ResponseWriter, id int) {
-	trackURL, found := globalTracksDb.Get(id)
-	if !found {
-		http.Error(w, "No track found with id: "+strconv.Itoa(id), http.StatusBadRequest)
-		return
-	}
-	track, err := igc.ParseLocation(trackURL)
-	if err != nil {
-		fmt.Errorf("Problem reading the track", err)
-	} else {
-		fmt.Fprintf(w, "Pilot: %s, gliderType: %s, date: %s",
-			track.Pilot, track.GliderType, track.Date.String())
-	}
-}
-
-// ReplyWithAllTrackIds replies with an array of all track ids
-func ReplyWithAllTrackIds(w http.ResponseWriter) {
-	ids := globalTracksDb.GetIDs()
-	json.NewEncoder(w).Encode(ids)
-}
-
-// ReplyWithSingleField replies with the information found in the specified field of trakc with given id
-func ReplyWithSingleField(w http.ResponseWriter, id int, field string) {
-	trackURL, found := globalTracksDb.Get(id)
-	if !found {
-		http.Error(w, "No track found with id: "+strconv.Itoa(id), http.StatusBadRequest)
-		return
-	}
-	track, err := igc.ParseLocation(trackURL)
-	if err != nil {
-		fmt.Errorf("Problem reading the track", err)
-	} else {
-		switch field {
-		case "pilot":
-			fmt.Fprintf(w, "Pilot: %s", track.Pilot)
-		case "glider":
-			fmt.Fprintf(w, "glider: %s", track.GliderType)
-		case "glider_id":
-			fmt.Fprintf(w, "glider_id: %s", track.GliderID)
-		case "H_date":
-			fmt.Fprintf(w, "H_date: %s", track.Date.String())
-			// calc
-		default:
-			d := 0.0
-			for i := 0; i < len(track.Points)-1; i++ {
-				d += track.Points[i].Distance(track.Points[i+1])
-			}
-
-			fmt.Fprintf(w, "distance: %f", d)
-			http.Error(w, "invalid field specified", http.StatusBadRequest)
-		}
-	}
-}
-
 var globalTracksDb TrackURLsDB
 
 func main() {
@@ -141,7 +77,7 @@ func main() {
 		log.Fatal("$PORT is not set")
 	}
 
-	http.HandleFunc("/", hello)
+	http.HandleFunc("/", RootHandler)
 	http.HandleFunc("/igcinfo/api/igc/", IgcHandler)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		panic(err)
