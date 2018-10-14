@@ -94,7 +94,7 @@ func main() {
 	}
 
 	http.HandleFunc("/", RootHandler)
-	http.HandleFunc("/api/", handlerAPIMeta)
+	http.HandleFunc("/igcinfo/api/", handlerAPIMeta)
 	http.HandleFunc("/igcinfo/api/igc/", IgcHandler)
 
 	globalStartTime = time.Now()
