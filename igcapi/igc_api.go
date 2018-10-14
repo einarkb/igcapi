@@ -1,4 +1,4 @@
-package main
+package igcapi
 
 import (
 	"encoding/json"
@@ -10,14 +10,14 @@ import (
 )
 
 // ReplyWithAllTrackIds replies with an array of all track ids
-func ReplyWithAllTrackIds(w http.ResponseWriter) {
-	ids := globalTracksDb.GetIDs()
+func ReplyWithAllTrackIds(w http.ResponseWriter, db *TrackURLsDB) {
+	ids := db.GetIDs()
 	json.NewEncoder(w).Encode(ids)
 }
 
 // ReplyWithTrack replies with the track of specified id
-func ReplyWithTrack(w http.ResponseWriter, id int) {
-	trackURL, found := globalTracksDb.Get(id)
+func ReplyWithTrack(w http.ResponseWriter, id int, db *TrackURLsDB) {
+	trackURL, found := db.Get(id)
 	if !found {
 		http.Error(w, "No track found with id: "+strconv.Itoa(id), http.StatusNotFound)
 		return
@@ -32,8 +32,8 @@ func ReplyWithTrack(w http.ResponseWriter, id int) {
 }
 
 // ReplyWithSingleField replies with the information found in the specified field of trakc with given id
-func ReplyWithSingleField(w http.ResponseWriter, id int, field string) {
-	trackURL, found := globalTracksDb.Get(id)
+func ReplyWithSingleField(w http.ResponseWriter, id int, field string, db *TrackURLsDB) {
+	trackURL, found := db.Get(id)
 	if !found {
 		http.Error(w, "No track found with id: "+strconv.Itoa(id), http.StatusNotFound)
 		return

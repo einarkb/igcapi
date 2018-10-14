@@ -1,4 +1,4 @@
-package main
+package igcapi
 
 // TrackURLsDB stores urls and and an id for the each url
 type TrackURLsDB struct {
