@@ -1,4 +1,4 @@
-package igcapi
+package main
 
 import (
 	"strconv"
