@@ -12,16 +12,16 @@ import (
 	igc "github.com/marni/goigc"
 )
 
-// global variable containing the start time of the app
-var globalStartTime time.Time
+// GlobalStartTime contains the start time of the app
+var GlobalStartTime time.Time
 
 // RootHandler Responds with 404
 func RootHandler(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 }
 
-// Replies with the API's metadata
-func handlerAPIMeta(w http.ResponseWriter, r *http.Request) {
+// HandlerAPIMeta Replies with the API's metadata
+func HandlerAPIMeta(w http.ResponseWriter, r *http.Request) {
 	type MetaData struct {
 		Uptime  string `json:"uptime"`
 		Info    string `json:"info"`
@@ -31,7 +31,7 @@ func handlerAPIMeta(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("content-type", "application/json")
 	encoder := json.NewEncoder(w)
 	encoder.SetIndent("", " ")
-	encoder.Encode(MetaData{time.Since(globalStartTime).String(), "Service for IGC tracks.", "v1"})
+	encoder.Encode(MetaData{time.Since(GlobalStartTime).String(), "Service for IGC tracks.", "v1"})
 }
 
 // IgcHandler handles /igcinfo/api/igc/
@@ -54,7 +54,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 					http.Error(w, "could not get a track from url: "+input.URL, http.StatusNotFound)
 					return
 				}
-				id, added := globalTracksDb.Add(input.URL)
+				id, added := GlobalTracksDb.Add(input.URL)
 				if added {
 					json.NewEncoder(w).Encode(ID{id})
 				} else {
@@ -77,17 +77,17 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(parts[4])
 		if err != nil {
 			if parts[4] == "" {
-				ReplyWithAllTrackIds(w, &globalTracksDb)
+				ReplyWithAllTrackIds(w, &GlobalTracksDb)
 				return
 			}
 			http.Error(w, "Invalid url", http.StatusBadRequest)
 			return
 		}
 		if len(parts) == 6 {
-			ReplyWithSingleField(w, id, parts[5], &globalTracksDb)
+			ReplyWithSingleField(w, id, parts[5], &GlobalTracksDb)
 			return
 		}
-		ReplyWithTrack(w, id, &globalTracksDb)
+		ReplyWithTrack(w, id, &GlobalTracksDb)
 	}
 }
 
