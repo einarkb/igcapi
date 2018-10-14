@@ -8,11 +8,26 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // RootHandler Responds with 404
 func RootHandler(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+}
+
+// Replies with the API's metadata
+func handlerAPIMeta(w http.ResponseWriter, r *http.Request) {
+	type MetaData struct {
+		Uptime  string `json:"uptime"`
+		Info    string `json:"info"`
+		Version string `json:"version"`
+	}
+
+	w.Header().Add("content-type", "application/json")
+	encoder := json.NewEncoder(w)
+	encoder.SetIndent("", " ")
+	encoder.Encode(MetaData{time.Since(globalStartTime).String(), "Service for IGC tracks.", "v1"})
 }
 
 // IgcHandler handles /igcinfo/api/igc/
@@ -68,6 +83,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 var globalTracksDb TrackURLsDB
+var globalStartTime time.Time
 
 func main() {
 	globalTracksDb = TrackURLsDB{}
@@ -78,7 +94,10 @@ func main() {
 	}
 
 	http.HandleFunc("/", RootHandler)
+	http.HandleFunc("/api/", handlerAPIMeta)
 	http.HandleFunc("/igcinfo/api/igc/", IgcHandler)
+
+	globalStartTime = time.Now()
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		panic(err)
 	}
