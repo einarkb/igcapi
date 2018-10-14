@@ -36,8 +36,6 @@ func HandlerAPIMeta(w http.ResponseWriter, r *http.Request) {
 
 // IgcHandler handles /igcinfo/api/igc/
 func IgcHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("content-type", "application/json")
-
 	if r.Method == "POST" {
 		type Input struct {
 			URL string `json:"url"`
@@ -56,6 +54,7 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 				}
 				id, added := GlobalTracksDb.Add(input.URL)
 				if added {
+					w.Header().Add("content-type", "application/json")
 					json.NewEncoder(w).Encode(ID{id})
 				} else {
 					http.Error(w, "track already exists with id: "+strconv.Itoa(id), http.StatusBadRequest)
@@ -93,12 +92,14 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 
 // ReplyWithAllTrackIds replies with an array of all track ids
 func ReplyWithAllTrackIds(w http.ResponseWriter, db *TrackURLsDB) {
+	w.Header().Add("content-type", "application/json")
 	ids := db.GetIDs()
 	json.NewEncoder(w).Encode(ids)
 }
 
 // ReplyWithTrack replies with the track of specified id
 func ReplyWithTrack(w http.ResponseWriter, id int, db *TrackURLsDB) {
+	w.Header().Add("content-type", "application/json")
 	trackURL, found := db.Get(id)
 	if !found {
 		http.Error(w, "No track found with id: "+strconv.Itoa(id), http.StatusNotFound)
@@ -108,6 +109,17 @@ func ReplyWithTrack(w http.ResponseWriter, id int, db *TrackURLsDB) {
 	if err != nil {
 		http.Error(w, "Problem reading the track", http.StatusServiceUnavailable)
 	} else {
+		type TrackInfo struct {
+			Hdate       string  `json:"H_date"`
+			Pilot       string  `json:"pilot"`
+			Glider      string  `json:"glider"`
+			GliderID    string  `json:"glider_id"`
+			TrackLength float64 `json:"track_length"`
+		}
+		trackInfo := TrackInfo{track.Date.String(), track.Pilot, track.GliderType, track.GliderID, CalculatedistanceFromPoints(track.Points)}
+
+		json.NewEncoder(w).Encode(trackInfo)
+
 		fmt.Fprintf(w, "Pilot: %s, gliderType: %s, date: %s",
 			track.Pilot, track.GliderType, track.Date.String())
 	}
@@ -115,6 +127,7 @@ func ReplyWithTrack(w http.ResponseWriter, id int, db *TrackURLsDB) {
 
 // ReplyWithSingleField replies with the information found in the specified field of trakc with given id
 func ReplyWithSingleField(w http.ResponseWriter, id int, field string, db *TrackURLsDB) {
+	w.Header().Add("content-type", "text/plain")
 	trackURL, found := db.Get(id)
 	if !found {
 		http.Error(w, "No track found with id: "+strconv.Itoa(id), http.StatusNotFound)
@@ -126,7 +139,7 @@ func ReplyWithSingleField(w http.ResponseWriter, id int, field string, db *Track
 	} else {
 		switch field {
 		case "pilot":
-			fmt.Fprintf(w, "Pilot: %s", track.Pilot)
+			fmt.Fprintf(w, "pilot: %s", track.Pilot)
 		case "glider":
 			fmt.Fprintf(w, "glider: %s", track.GliderType)
 		case "glider_id":
@@ -134,13 +147,18 @@ func ReplyWithSingleField(w http.ResponseWriter, id int, field string, db *Track
 		case "H_date":
 			fmt.Fprintf(w, "H_date: %s", track.Date.String())
 		case "track_length":
-			d := 0.0
-			for i := 0; i < len(track.Points)-1; i++ {
-				d += track.Points[i].Distance(track.Points[i+1])
-			}
-			fmt.Fprintf(w, "distance: %f", d)
+			fmt.Fprintf(w, "distance: %f", CalculatedistanceFromPoints(track.Points))
 		default:
 			http.Error(w, "invalid field specified", http.StatusBadRequest)
 		}
 	}
+}
+
+// CalculatedistanceFromPoints take a set of points and retunr the total distance
+func CalculatedistanceFromPoints(points []igc.Point) float64 {
+	d := 0.0
+	for i := 0; i < len(points)-1; i++ {
+		d += points[i].Distance(points[i+1])
+	}
+	return d
 }
