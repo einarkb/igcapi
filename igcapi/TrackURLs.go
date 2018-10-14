@@ -1,5 +1,8 @@
 package igcapi
 
+// global varible of the storage system
+var globalTracksDb TrackURLsDB
+
 // TrackURLsDB stores urls and and an id for the each url
 type TrackURLsDB struct {
 	urls   map[int]string
