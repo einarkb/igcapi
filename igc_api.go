@@ -19,12 +19,12 @@ func ReplyWithAllTrackIds(w http.ResponseWriter) {
 func ReplyWithTrack(w http.ResponseWriter, id int) {
 	trackURL, found := globalTracksDb.Get(id)
 	if !found {
-		http.Error(w, "No track found with id: "+strconv.Itoa(id), http.StatusBadRequest)
+		http.Error(w, "No track found with id: "+strconv.Itoa(id), http.StatusNotFound)
 		return
 	}
 	track, err := igc.ParseLocation(trackURL)
 	if err != nil {
-		fmt.Errorf("Problem reading the track", err)
+		http.Error(w, "Problem reading the track", http.StatusServiceUnavailable)
 	} else {
 		fmt.Fprintf(w, "Pilot: %s, gliderType: %s, date: %s",
 			track.Pilot, track.GliderType, track.Date.String())
@@ -35,12 +35,12 @@ func ReplyWithTrack(w http.ResponseWriter, id int) {
 func ReplyWithSingleField(w http.ResponseWriter, id int, field string) {
 	trackURL, found := globalTracksDb.Get(id)
 	if !found {
-		http.Error(w, "No track found with id: "+strconv.Itoa(id), http.StatusBadRequest)
+		http.Error(w, "No track found with id: "+strconv.Itoa(id), http.StatusNotFound)
 		return
 	}
 	track, err := igc.ParseLocation(trackURL)
 	if err != nil {
-		fmt.Errorf("Problem reading the track", err)
+		http.Error(w, "Problem reading the track", http.StatusServiceUnavailable)
 	} else {
 		switch field {
 		case "pilot":
