@@ -1,6 +1,7 @@
 package main
 
 import (
+	"IGCApp/igcapi"
 	"encoding/json"
 	"io"
 	"log"
@@ -75,25 +76,25 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(parts[4])
 		if err != nil {
 			if parts[4] == "" {
-				ReplyWithAllTrackIds(w)
+				igcapi.ReplyWithAllTrackIds(w, &globalTracksDb)
 				return
 			}
 			http.Error(w, "Invalid url", http.StatusBadRequest)
 			return
 		}
 		if len(parts) == 6 {
-			ReplyWithSingleField(w, id, parts[5])
+			igcapi.ReplyWithSingleField(w, id, parts[5], &globalTracksDb)
 			return
 		}
-		ReplyWithTrack(w, id)
+		igcapi.ReplyWithTrack(w, id, &globalTracksDb)
 	}
 }
 
-var globalTracksDb TrackURLsDB
+var globalTracksDb igcapi.TrackURLsDB
 var globalStartTime time.Time
 
 func main() {
-	globalTracksDb = TrackURLsDB{}
+	globalTracksDb = igcapi.TrackURLsDB{}
 	globalTracksDb.Init()
 	port := os.Getenv("PORT")
 	if port == "" {

@@ -3,6 +3,12 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "FA04XkrJpiyvnoXejlsDSmqsPGE=",
+			"path": "github.com/einarkb/igcapi",
+			"revision": "5bc52ed02c023e6a0c2b4e952ecd4f38199d910b",
+			"revisionTime": "2018-10-14T15:45:43Z"
+		},
+		{
 			"checksumSHA1": "b6LyZHPvCyixC7AFtuypEs3pq48=",
 			"path": "github.com/golang/geo/r1",
 			"revision": "476085157cff9aaeef4d4f124649436542d4114a",
