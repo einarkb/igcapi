@@ -1,4 +1,4 @@
-package main
+package igcapi
 
 import (
 	"encoding/json"
@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	igc "github.com/marni/goigc"
 )
 
 // RootHandler Responds with 404
@@ -45,6 +47,10 @@ func IgcHandler(w http.ResponseWriter, r *http.Request) {
 		err := json.NewDecoder(r.Body).Decode(&input)
 		if err == nil {
 			if input.URL != "" {
+				_, err := igc.ParseLocation(input.URL)
+				if err != nil {
+					http.Error(w, "could not get a track from url: "+input.URL, http.StatusNotFound)
+				}
 				id, added := globalTracksDb.Add(input.URL)
 				if added {
 					json.NewEncoder(w).Encode(ID{id})
